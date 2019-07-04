@@ -8,7 +8,7 @@ var burger = {
         });
     },
     create: function (burgerObj, cb) {
-        orm.create("burgers", ["burger_name","devoured"], [burgerObj.name, burgerObj.devoured], function (res) {
+        orm.create("burgers", ["burger_name","devoured"], [burgerObj.burger_name, burgerObj.devoured], function (res) {
             cb(res)
         });
     },
@@ -19,7 +19,5 @@ var burger = {
         });
     }
 };
-
-
 
 module.exports = burger
