@@ -7,14 +7,14 @@ var burger = {
             cb(res)
         });
     },
-    create: function (burgerName, cb) {
-        orm.create("burgers", burgerName, function (res) {
+    create: function (burgerObj, cb) {
+        orm.create("burgers", ["burger_name","devoured"], [burgerObj.name, burgerObj.devoured], function (res) {
             cb(res)
         });
     },
 
-    update: function (id, cb) {
-        orm.update("burgers", id, function (res) {
+    update: function (id, burgerObj, cb) {
+        orm.update("burgers", burgerObj, "id = " + id , function (res) {
             cb(res);
         });
     }
