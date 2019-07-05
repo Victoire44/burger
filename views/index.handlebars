@@ -1,7 +1,28 @@
 <div class="container">
     <h1>Eat-Da-Burger</h1>
 
+    <ul>
+        {{#each burgers}}
+        {{#unless devoured}}
+        <li>{{burger_name}}</li>
+        {{/unless}}
+        {{/each}}
+    </ul>
 
+    <ul>
+        {{#each burgers}}
+        {{#if devoured}}
+        <li>{{burger_name}}</li>
+        {{/if}}
+        {{/each}}
+    </ul>
 
+    <form class="create-form">
+        <div class="form-group">
+            <label for="burger">Enter a burger you want to eat Click the "Submit" button:</label>
+            <input type="text" id="burger" name="name">
+        </div>
+        <button type="submit">Submit</button>
+    </form>
 
 </div>
