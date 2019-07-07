@@ -1,34 +1,25 @@
 var connection = require("../config/connection");
 
-function printQuestionMarks(num) {
-    var arr = [];
-
-    for (var i = 0; i < num; i++) {
-        arr.push("?");
-    }
-
-    return arr.toString();
+// Add quotes to the strings
+function escape(value) {
+    return typeof value === "string" ? `'${value}'` : value
 }
 
-function objToSql(ob) {
-    var arr = [];
-
-    // loop through the keys and push the key/value as a string int arr
-    for (var key in ob) {
-        var value = ob[key];
-        // check to skip hidden properties
-        if (Object.hasOwnProperty.call(ob, key)) {
-            if (typeof value === "string" && value.indexOf(" ") >= 0) {
-                value = "'" + value + "'";
-            }
-            arr.push(key + "=" + value);
-        }
+// function to retrieve keys and values in SQL format for the SET
+function objToSql(obj) {
+    var result = []
+    var keys = Object.keys(obj)
+    var values = Object.values(obj)
+    for (var i = 0; i < keys.length; i++) {
+        result.push(`${keys[i]} = ${escape(values[i])}`);
     }
-    // translate array of strings to a single comma-separated string
-    return arr.toString();
+    return result; 
+    // Object.keys(obj).map(key => `${key} = ${escape(obj[key])}`)
 }
 
+// Object relational mapping
 var orm = {
+    // return all the data
     all: function (tableInput, cb) {
         var queryString = `SELECT * FROM ${tableInput};`
 
@@ -40,33 +31,31 @@ var orm = {
         })
     },
 
-    create: function (table, cols, vals, cb) {
+    // Insert new row in the table
+    create: function (table, obj, cb) {
         var queryString = `
-        INSERT INTO ${table} (${cols.toString()}) 
-        VALUES (${printQuestionMarks(vals.length)});
+        INSERT INTO ${table} (${Object.keys(obj).toString()}) 
+        VALUES (${Object.values(obj).map(escape).toString()});
         `
-        console.log(queryString);
-
-        connection.query(queryString, vals, function (err, result) {
-            if (err) {
-                throw err;
-            }
-
-            cb(result);
-        });
-    },
-    update: function (table, objColVals, condition, cb) {
-        var queryString = `
-          UPDATE ${table}
-          SET ${objToSql(objColVals)}
-          WHERE ${condition};
-        `
-        console.log(queryString);
         connection.query(queryString, function (err, result) {
             if (err) {
                 throw err;
             }
+            cb(result);
+        });
+    },
 
+    // Update an existing row in the table
+    update: function (table, obj, condition, cb) {
+        var queryString = `
+          UPDATE ${table}
+          SET ${objToSql(obj)}
+          WHERE ${condition};
+        `
+        connection.query(queryString, function (err, result) {
+            if (err) {
+                throw err;
+            }
             cb(result);
         });
     }
