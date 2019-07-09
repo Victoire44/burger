@@ -4,6 +4,7 @@ USE burgers_db;
 
 CREATE TABLE burgers(
     id INTEGER(11) AUTO_INCREMENT NOT NULL,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     burger_name VARCHAR(255) NOT NULL,
     devoured BOOLEAN, 
     PRIMARY KEY (id)

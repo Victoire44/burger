@@ -13,10 +13,7 @@ router.get("/", function (req, res) {
 });
 
 router.post("/api/burgers", function (req, res) {
-    burger.create({
-        burger_name: req.body.burger_name,
-        devoured: req.body.devoured,
-    }, function (result) {
+    burger.create(req.body, function (result) {
         res.json({ id: result.insertId });
     });
 });
